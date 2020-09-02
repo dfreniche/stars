@@ -3,6 +3,7 @@
 #define NUM_STARS 5
 
 // Array of entities
+// Last star will be left empty to mark end of array
 Entity entities[NUM_STARS + 1];
 
 // points to next free entity, starts pointing to entities[0]
@@ -17,8 +18,6 @@ const Entity init_entity = {
    0xFF                 // color
 };
 
-u8 y_global;
-
 // init: initializes all global vars
 // sdcc will initialize them in ROM if we init directly
 // so we 1st reserve space, then init it
@@ -29,7 +28,6 @@ void manager_entity_init() {
     // beware sizeof(Entity *) is 2 bytes
    cpct_memset(entities, 0, sizeof(entities));
    next_free_entity = entities;
-   y_global = 10;
 }
 
 // creates a new uninitialized entity
@@ -53,15 +51,14 @@ void create_init_entities(void) {
 
 // sets some init random values for our entities
 void manager_set_init_entity_values(Entity *e) {
-   y_global += 10;
    e->type = ENTITY_TYPE_DEFAULT;
    e->x = 79;
    // e->y = y_global;
    e->prev_x = 79;
-   e->y = 1 + (u8)(cpct_rand() & 0xC8);
+   e->y = cpct_rand() % 200; // (cpct_rand() & 0xC8);
    e->prev_y = e->y;
    // e->color = 4; //(cpct_rand() & 0xF);
-   e->x_speed = -1; //-(cpct_rand() & 0x03); // % 4
+   e->x_speed = -(cpct_rand() % 4); // & 0x03); // % 4
 }
 
 // destroys an entity
@@ -72,12 +69,7 @@ void manager_entity_destroy(Entity *dead_entity) {
 // Applies function to all Entitites
 void manager_entity_forall( void (*update_function)(Entity *) ) {
    Entity *e = entities;
-   // for (int i=0; i<NUM_STARS; i++) {
-   //    Entity *e = &entities[i];
-   //    if (e->type != ENTITY_TYPE_INVALID) {
-   //       update_function(e);
-   //    }
-   // }
+
    while (e != next_free_entity) {
       update_function(e);
       ++e;
