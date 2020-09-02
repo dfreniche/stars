@@ -4,15 +4,18 @@
 // Variables
 // ----------------------------------------------------------------------------
 
-#define MAX_ENTITIES 30
+#define MAX_ENTITIES 40
 
 // Array of entities
 // Last entity will be left empty to mark end of array
 // All valid entities should be at the beginning of the array
 // After init, array look like
-// [E1][E2][E3][E4][E5][F]
-// where [F] is next_free_entity
-Entity entities[MAX_ENTITIES + 1];
+//    [E1][E2][E3][E4][E5][F]
+//    where [F] is next_free_entity
+Entity entities[MAX_ENTITIES];
+u8 zero_type_at_the_end;   // we need a byte set to zero just after the array of entities. If we put it here it'll be just after entities
+// this is a hack because we know that this compiler will generate this data section with
+// zero_type_at_the_end just following entities
 
 // points to next free entity, starts pointing to entities[0]
 Entity *next_free_entity;
@@ -35,6 +38,7 @@ void manager_entity_init() {
    next_free_entity = entities;
 
    num_entities = 0;
+   zero_type_at_the_end = ENTITY_TYPE_INVALID;
 }
 
 // creates a new uninitialized entity
@@ -55,6 +59,7 @@ void manager_entity_set4destruction(Entity *dead_entity) {
 }
 
 // destroys an entity
+// this copies the last entity in the destroyed entity space
 void manager_entity_destroy(Entity *dead_entity) {
    Entity *de = dead_entity;
    Entity *last = next_free_entity;

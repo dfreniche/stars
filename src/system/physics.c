@@ -2,6 +2,10 @@
 #include "render.h"
 #include <managers/entity.h>
 
+// ----------------------------------------------------------------------------
+// Public interface
+// ----------------------------------------------------------------------------
+
 // updates one entity
 // changes position based on x velocity
 void sys_physics_update_one_entity(Entity *e) {

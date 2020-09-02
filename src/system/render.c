@@ -1,5 +1,16 @@
 #include "render.h"
 
+// ----------------------------------------------------------------------------
+// Public interface
+// ----------------------------------------------------------------------------
+
+const u8 palette[] = {
+    HW_BLACK,        HW_BRIGHT_WHITE, HW_BRIGHT_WHITE, HW_BRIGHT_WHITE,
+    HW_BRIGHT_WHITE, HW_BRIGHT_WHITE, HW_BRIGHT_WHITE, HW_BRIGHT_WHITE,
+    HW_BRIGHT_WHITE, HW_BRIGHT_WHITE, HW_BRIGHT_WHITE, HW_BRIGHT_WHITE,
+    HW_BRIGHT_WHITE, HW_BRIGHT_WHITE, HW_BRIGHT_WHITE, HW_BRIGHT_WHITE
+};
+
 void sys_render_one_entity( Entity *e) {
     u8 *pvmem;
 
@@ -28,5 +39,5 @@ void sys_render_init() {
     cpct_disableFirmware();
     cpct_setVideoMode(0);
     cpct_setBorder(HW_BLACK);
-    cpct_setPALColour(0, HW_BLACK);
+    cpct_setPalette(palette, 16);
 }

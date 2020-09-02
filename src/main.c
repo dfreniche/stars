@@ -14,10 +14,7 @@ void wait(u8 n) {
 
 void main(void) {
    sys_render_init();
-
    manager_entity_init();
-
-   // create_init_entities();   
 
    while (1) {
       sys_physics_update();
@@ -25,6 +22,6 @@ void main(void) {
       sys_render_update();
       manager_entity_update();
 
-      wait(10); // wait 10 times each frame, instead of 50 frames / sec we go for 5 frames / sec 
+      wait(1); // wait 10 times each frame, instead of 50 frames / sec we go for 5 frames / sec 
    }
 }

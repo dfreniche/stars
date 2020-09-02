@@ -10,7 +10,7 @@ const Entity init_entity = {
    ENTITY_TYPE_DEFAULT, // type
    79, 1,               // x,y
    -1,                  // x speeed
-   0xFF,                // color
+   0x80,                // color
    0x00                 // prevptr
 };
 
@@ -23,7 +23,7 @@ void set_init_star_values(Entity *e) {
    e->type = ENTITY_TYPE_DEFAULT;
    e->x = 79;
    e->y = cpct_rand() % 200;
-   e->color = 2;
+   e->color = cpct_px2byteM0(1, 0); // this gets 0x80
    e->x_speed = -1-(cpct_rand() & 0x03); // we do a bitwise AND with 0b00000011. Any bits other than 11 are discarded 
 }
 
