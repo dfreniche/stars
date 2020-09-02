@@ -23,3 +23,10 @@ void sys_render_deleted_entity( Entity *e) {
 void sys_render_update() {
     manager_entity_forall( sys_render_one_entity );
 }
+
+void sys_render_init() {
+    cpct_disableFirmware();
+    cpct_setVideoMode(0);
+    cpct_setBorder(HW_BLACK);
+    cpct_setPALColour(0, HW_BLACK);
+}

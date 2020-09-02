@@ -1,6 +1,10 @@
 #include "entity.h"
 
-#define NUM_ENTITIES 5
+// ----------------------------------------------------------------------------
+// Variables
+// ----------------------------------------------------------------------------
+
+#define MAX_ENTITIES 30
 
 // Array of entities
 // Last entity will be left empty to mark end of array
@@ -8,19 +12,16 @@
 // After init, array look like
 // [E1][E2][E3][E4][E5][F]
 // where [F] is next_free_entity
-Entity entities[NUM_ENTITIES + 1];
+Entity entities[MAX_ENTITIES + 1];
 
 // points to next free entity, starts pointing to entities[0]
 Entity *next_free_entity;
+// number of entities we have created
+u8 num_entities;
 
-// template for new entities, quicker to copy this memory chunk
-const Entity init_entity = {
-   ENTITY_TYPE_DEFAULT, // type
-   79, 1,               // x,y
-   -1,                  // x speeed
-   0xFF,                // color
-   0x00                 // prevptr
-};
+// ----------------------------------------------------------------------------
+// Public interface
+// ----------------------------------------------------------------------------
 
 // init: initializes all global vars
 // sdcc will initialize them in ROM if we init directly
@@ -32,6 +33,8 @@ void manager_entity_init() {
     // beware sizeof(Entity *) is 2 bytes
    cpct_memset(entities, 0, sizeof(entities));
    next_free_entity = entities;
+
+   num_entities = 0;
 }
 
 // creates a new uninitialized entity
@@ -39,27 +42,10 @@ void manager_entity_init() {
 Entity *manager_entity_create() {
    Entity *e = next_free_entity;
    next_free_entity = e + 1;
+
+   ++num_entities;
    
    return e;
-}
-
-// Initializes all entities in the global array
-// creates them and initialized them
-void create_init_entities(void) {
-   for (u8 i = 0; i < NUM_ENTITIES; i++) {
-      Entity *e = manager_entity_create();            // create all entities
-      cpct_memcpy(e, &init_entity, sizeof(Entity));   // copy from template
-      manager_set_init_entity_values(e);              // choose some random values
-   }
-}
-
-// sets some init random values for our entities
-void manager_set_init_entity_values(Entity *e) {
-   e->type = ENTITY_TYPE_DEFAULT;
-   e->x = 79;
-   e->y = cpct_rand() % 200;
-   e->color = 2;
-   e->x_speed = -1-(cpct_rand() & 0x03); // we do a bitwise AND with 0b00000011. Any bits other than 11 are discarded 
 }
 
 // mark an entity for later destruction
@@ -80,6 +66,8 @@ void manager_entity_destroy(Entity *dead_entity) {
 
    last->type = ENTITY_TYPE_INVALID;
    next_free_entity = last;
+
+   --num_entities;
 }
 
 // Applies function to all Entitites
@@ -102,4 +90,11 @@ void manager_entity_update() {
          ++e;
       }
    }
+}
+
+// returns the number of free entities available
+// return: 
+//    u8 number of free entities
+u8 manager_entity_free_space() {
+   return MAX_ENTITIES - num_entities;
 }

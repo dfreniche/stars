@@ -3,6 +3,7 @@
 #include "managers/entity.h"
 #include "system/physics.h"
 #include "system/render.h"
+#include "system/generator.h"
 
 void wait(u8 n) {
    do {
@@ -12,19 +13,16 @@ void wait(u8 n) {
 }
 
 void main(void) {
-   cpct_disableFirmware();
-   cpct_setVideoMode(0);
-   cpct_setBorder(HW_BLACK);
-   cpct_setPALColour(0, HW_BLACK);
+   sys_render_init();
 
    manager_entity_init();
 
-   create_init_entities();   
+   // create_init_entities();   
 
    while (1) {
       sys_physics_update();
+      sys_generator_update();
       sys_render_update();
-
       manager_entity_update();
 
       wait(10); // wait 10 times each frame, instead of 50 frames / sec we go for 5 frames / sec 
