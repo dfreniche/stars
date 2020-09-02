@@ -12,9 +12,9 @@
 typedef struct te {
    u8 type;             // entity type: one of the constants above
    u8 x, y;             // x, y position
-   u8 prev_x, prev_y;   // previous x ,y positions (for animation purposes)
    i8 x_speed;          // speed in x axis
    u8 color;            // star color
+   u8 *prevptr;         // previous screen pointer where this entity was rendered
 } Entity;
 
 // ----------------------------------------------------------------------------
@@ -24,6 +24,8 @@ typedef struct te {
 void create_init_entities(void);
 void manager_entity_init();
 Entity *manager_entity_create();
+void manager_entity_set4destruction(Entity *dead_entity);
 void manager_entity_destroy(Entity *dead_entity);
 void manager_entity_forall( void (*update_function)(Entity *) );
 void manager_set_init_entity_values(Entity *e);
+void manager_entity_update();

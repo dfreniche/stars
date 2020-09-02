@@ -1,6 +1,6 @@
 #include "entity.h"
 
-#define NUM_ENTITIES 30
+#define NUM_ENTITIES 5
 
 // Array of entities
 // Last entity will be left empty to mark end of array
@@ -15,11 +15,11 @@ Entity *next_free_entity;
 
 // template for new entities, quicker to copy this memory chunk
 const Entity init_entity = {
-   ENTITY_TYPE_DEFAULT,    // type
+   ENTITY_TYPE_DEFAULT, // type
    79, 1,               // x,y
-   79, 0,                 // previous positions
    -1,                  // x speeed
-   0xFF                 // color
+   0xFF,                // color
+   0x00                 // prevptr
 };
 
 // init: initializes all global vars
@@ -57,12 +57,15 @@ void create_init_entities(void) {
 void manager_set_init_entity_values(Entity *e) {
    e->type = ENTITY_TYPE_DEFAULT;
    e->x = 79;
-   // e->y = y_global;
-   e->prev_x = 79;
    e->y = cpct_rand() % 200;
-   e->prev_y = e->y;
    e->color = 2;
    e->x_speed = -1-(cpct_rand() & 0x03); // we do a bitwise AND with 0b00000011. Any bits other than 11 are discarded 
+}
+
+// mark an entity for later destruction
+// we just activate the "dead bit" on that entity
+void manager_entity_set4destruction(Entity *dead_entity) {
+   dead_entity->type |= ENTITY_TYPE_DEAD;
 }
 
 // destroys an entity
@@ -86,5 +89,17 @@ void manager_entity_forall( void (*update_function)(Entity *) ) {
    while (e != next_free_entity) {
       update_function(e);
       ++e;
+   }
+}
+
+// Updates entity manager by deleting all marked for deletion entities
+void manager_entity_update() {
+   Entity *e = entities;
+   while (e->type != ENTITY_TYPE_INVALID) {
+      if (e->type & ENTITY_TYPE_DEAD) {
+         manager_entity_destroy(e);
+      } else {
+         ++e;
+      }
    }
 }

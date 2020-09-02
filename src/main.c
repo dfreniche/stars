@@ -24,6 +24,9 @@ void main(void) {
    while (1) {
       sys_physics_update();
       sys_render_update();
-      wait(20); // wait 10 times each frame, instead of 50 frames / sec we go for 5 frames / sec 
+
+      manager_entity_update();
+
+      wait(10); // wait 10 times each frame, instead of 50 frames / sec we go for 5 frames / sec 
    }
 }

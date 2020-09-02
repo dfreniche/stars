@@ -1,13 +1,18 @@
 #include "render.h"
 
 void sys_render_one_entity( Entity *e) {
-    // paint star in new position
-    u8 *pvmem = cpct_getScreenPtr(CPCT_VMEM_START, e->x, e->y);
-    *pvmem = e->color;
-    
-    // paint previous position with background color
-    pvmem = cpct_getScreenPtr(CPCT_VMEM_START, e->prev_x, e->prev_y);
-    *pvmem = 0x00;
+    u8 *pvmem;
+
+    if (e->prevptr != 0) {
+        // paint previous position with background color
+        *(e->prevptr) = 0x00;
+    }
+    if (!(e->type & ENTITY_TYPE_DEAD)) {
+        // paint star in new position
+        pvmem = cpct_getScreenPtr(CPCT_VMEM_START, e->x, e->y);
+        *pvmem = e->color;
+        e->prevptr = pvmem;
+    }
 }
 
 void sys_render_deleted_entity( Entity *e) {
