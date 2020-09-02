@@ -51,14 +51,16 @@ void create_init_entities(void) {
 
 // sets some init random values for our entities
 void manager_set_init_entity_values(Entity *e) {
+   u8 color = (cpct_rand() % 4);
+
    e->type = ENTITY_TYPE_DEFAULT;
    e->x = 79;
    // e->y = y_global;
    e->prev_x = 79;
-   e->y = cpct_rand() % 200; // (cpct_rand() & 0xC8);
+   e->y = cpct_rand() % 200;
    e->prev_y = e->y;
-   // e->color = 4; //(cpct_rand() & 0xF);
-   e->x_speed = -(cpct_rand() % 4); // & 0x03); // % 4
+   e->color = (color << 4) | color;
+   e->x_speed = -1-(cpct_rand() & 0x03); // we do a bitwise AND with 0b00000011. Any bits other than 11 are discarded 
 }
 
 // destroys an entity
