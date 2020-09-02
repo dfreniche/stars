@@ -10,10 +10,12 @@ void sys_physics_update_one_entity(Entity *e) {
     // with a velocity of -5 x will be 15, 10, 5, 0, 250, 245
     // at some point when x < 0 it gets 255, so it's >
     if (newx > e->x) {
-        manager_entity_destroy(e);
         sys_render_deleted_entity( e );
-
-        manager_set_init_entity_values(e);
+        manager_entity_destroy(e);
+        {
+        Entity * new_e = manager_entity_create();
+        manager_set_init_entity_values(new_e);
+        }
     } else {
         e->prev_x = e->x;
         e->x = newx;

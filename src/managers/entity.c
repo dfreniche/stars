@@ -1,10 +1,14 @@
 #include "entity.h"
 
-#define NUM_STARS 5
+#define NUM_ENTITIES 30
 
 // Array of entities
-// Last star will be left empty to mark end of array
-Entity entities[NUM_STARS + 1];
+// Last entity will be left empty to mark end of array
+// All valid entities should be at the beginning of the array
+// After init, array look like
+// [E1][E2][E3][E4][E5][F]
+// where [F] is next_free_entity
+Entity entities[NUM_ENTITIES + 1];
 
 // points to next free entity, starts pointing to entities[0]
 Entity *next_free_entity;
@@ -42,7 +46,7 @@ Entity *manager_entity_create() {
 // Initializes all entities in the global array
 // creates them and initialized them
 void create_init_entities(void) {
-   for (u8 i = 0; i < NUM_STARS; i++) {
+   for (u8 i = 0; i < NUM_ENTITIES; i++) {
       Entity *e = manager_entity_create();            // create all entities
       cpct_memcpy(e, &init_entity, sizeof(Entity));   // copy from template
       manager_set_init_entity_values(e);              // choose some random values
@@ -51,21 +55,28 @@ void create_init_entities(void) {
 
 // sets some init random values for our entities
 void manager_set_init_entity_values(Entity *e) {
-   u8 color = (cpct_rand() % 4);
-
    e->type = ENTITY_TYPE_DEFAULT;
    e->x = 79;
    // e->y = y_global;
    e->prev_x = 79;
    e->y = cpct_rand() % 200;
    e->prev_y = e->y;
-   e->color = (color << 4) | color;
+   e->color = 2;
    e->x_speed = -1-(cpct_rand() & 0x03); // we do a bitwise AND with 0b00000011. Any bits other than 11 are discarded 
 }
 
 // destroys an entity
 void manager_entity_destroy(Entity *dead_entity) {
-    dead_entity->type = ENTITY_TYPE_INVALID;
+   Entity *de = dead_entity;
+   Entity *last = next_free_entity;
+   --last;
+
+   if (de != last) {
+      cpct_memcpy(de, last, sizeof(Entity));
+   } 
+
+   last->type = ENTITY_TYPE_INVALID;
+   next_free_entity = last;
 }
 
 // Applies function to all Entitites

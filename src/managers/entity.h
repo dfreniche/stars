@@ -23,6 +23,7 @@ typedef struct te {
 
 void create_init_entities(void);
 void manager_entity_init();
+Entity *manager_entity_create();
 void manager_entity_destroy(Entity *dead_entity);
 void manager_entity_forall( void (*update_function)(Entity *) );
 void manager_set_init_entity_values(Entity *e);
