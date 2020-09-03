@@ -29,11 +29,15 @@ void main(void) {
       if (cpct_isKeyPressed(Key_CursorRight)) {
          sys_physics_change_x_axis_movement_left_to_right();
          sys_generator_left();
-      }
-
-      if (cpct_isKeyPressed(Key_CursorLeft)) {
+      } else if (cpct_isKeyPressed(Key_CursorLeft)) {
          sys_physics_change_x_axis_movement_right_to_left();
          sys_generator_right();
+      } else if (cpct_isKeyPressed(Key_CursorUp)) {
+         sys_physics_change_y_axis_movement_bottom_to_top();
+         sys_generator_bottom();
+      } else if (cpct_isKeyPressed(Key_CursorDown)) {
+         sys_physics_change_y_axis_movement_top_to_bottom();
+         sys_generator_top();
       }
 
       cpct_waitVSYNC();

@@ -15,7 +15,9 @@ const Entity init_entity = {
 };
 
 u8 start_x;
-i8 direction;
+u8 start_y;
+
+direction movement_direction;
 
 // ----------------------------------------------------------------------------
 // Private interface
@@ -23,11 +25,22 @@ i8 direction;
 
 // sets some init random values for our entities
 void set_init_star_values(Entity *e) {
+   i8 sign = -1;
+
    e->type = ENTITY_TYPE_DEFAULT;
-   e->x = start_x;
-   e->y = cpct_rand() % 200;
+
+   if ( (movement_direction == TO_LEFT) || (movement_direction == TO_RIGHT) ) {
+      e->x = start_x;
+      e->y = cpct_rand() % 200;
+   } else {
+      e->x = cpct_rand() % 160;
+      e->y = start_y;
+   }
    e->color = cpct_px2byteM0(1, 0); // this gets 0x80
-   e->x_speed = direction + (direction*(cpct_rand() & 0x03)); // we do a bitwise AND with 0b00000011. Any bits other than 11 are discarded 
+   if ( (movement_direction == TO_DOWN) || (movement_direction == TO_RIGHT) ) {
+      sign = 1;
+   }
+   e->x_speed = sign + (sign*(cpct_rand() & 0x03)); // we do a bitwise AND with 0b00000011. Any bits other than 11 are discarded 
 }
 
 // ----------------------------------------------------------------------------
@@ -36,7 +49,8 @@ void set_init_star_values(Entity *e) {
 
 void sys_generator_init() {
    start_x = 79;
-   direction = -1;
+   start_y = 0;
+   movement_direction = TO_LEFT;
 }
 
 // Initializes all entities in the global array
@@ -66,12 +80,26 @@ void sys_generator_update() {
     }
 }
 
+// generates entities from the right
 void sys_generator_right() {
    start_x = 79;
-   direction = -1;
+   movement_direction = TO_LEFT;
 }
 
+// generates entities from the left
 void sys_generator_left() {
    start_x = 1;
-   direction = 1;
+   movement_direction = TO_RIGHT;
+}
+
+// generates entities from the bottom
+void sys_generator_bottom() {
+   start_y = 199;
+   movement_direction = TO_UP;
+}
+
+// generates entities from the top
+void sys_generator_top() {
+   start_y = 1;
+   movement_direction = TO_DOWN;
 }

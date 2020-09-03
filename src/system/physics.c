@@ -4,7 +4,6 @@
 
 void (*sys_physics_update_one_entity)(Entity *);
 
-
 // ----------------------------------------------------------------------------
 // Private functions
 // ----------------------------------------------------------------------------
@@ -17,13 +16,7 @@ void sys_physics_update_one_entity_right_to_left(Entity *e) {
     // with a velocity of -5 x will be 15, 10, 5, 0, 250, 245
     // at some point when x < 0 it gets 255, so it's >
     if (newx > e->x) {
-        // sys_render_deleted_entity( e );
         manager_entity_set4destruction(e);
-        // manager_entity_destroy(e);
-        // {
-        // Entity * new_e = manager_entity_create();
-        // manager_set_init_entity_values(new_e);
-        // }
     } else {
         e->x = newx;
     }
@@ -35,15 +28,31 @@ void sys_physics_update_one_entity_left_to_right(Entity *e) {
     // with a velocity of -5 x will be 15, 10, 5, 0, 250, 245
     // at some point when x < 0 it gets 255, so it's >
     if (newx > 80) {
-        // sys_render_deleted_entity( e );
         manager_entity_set4destruction(e);
-        // manager_entity_destroy(e);
-        // {
-        // Entity * new_e = manager_entity_create();
-        // manager_set_init_entity_values(new_e);
-        // }
     } else {
         e->x = newx;
+    }
+}
+
+// moving up
+void sys_physics_update_one_entity_bottom_to_top(Entity *e) {
+    u8 newy = e->y + e->x_speed;
+    
+    if (newy > e->y) {
+        manager_entity_set4destruction(e);
+    } else {
+        e->y = newy;
+    }
+}
+
+// moving down
+void sys_physics_update_one_entity_top_to_bottom(Entity *e) {
+    u8 newy = e->y + e->x_speed;
+    
+    if (newy > 190) {
+        manager_entity_set4destruction(e);
+    } else {
+        e->y = newy;
     }
 }
 
@@ -71,6 +80,18 @@ void sys_physics_change_x_axis_movement_left_to_right() {
 void sys_physics_change_x_axis_movement_right_to_left() {
     sys_physics_update_one_entity = sys_physics_update_one_entity_right_to_left;
     manager_entity_forall( change_x_axis_movement_one_entity_right_to_left );
+}
+
+// ^^
+void sys_physics_change_y_axis_movement_bottom_to_top() {
+    sys_physics_update_one_entity = sys_physics_update_one_entity_bottom_to_top;
+    manager_entity_forall( change_x_axis_movement_one_entity_right_to_left );
+}
+
+// vv
+void sys_physics_change_y_axis_movement_top_to_bottom() {
+    sys_physics_update_one_entity = sys_physics_update_one_entity_top_to_bottom;
+    manager_entity_forall( change_x_axis_movement_one_entity_left_to_right );
 }
 
 // ----------------------------------------------------------------------------
