@@ -14,6 +14,9 @@ const Entity init_entity = {
    0x00                 // prevptr
 };
 
+u8 start_x;
+i8 direction;
+
 // ----------------------------------------------------------------------------
 // Private interface
 // ----------------------------------------------------------------------------
@@ -21,15 +24,20 @@ const Entity init_entity = {
 // sets some init random values for our entities
 void set_init_star_values(Entity *e) {
    e->type = ENTITY_TYPE_DEFAULT;
-   e->x = 79;
+   e->x = start_x;
    e->y = cpct_rand() % 200;
    e->color = cpct_px2byteM0(1, 0); // this gets 0x80
-   e->x_speed = -1-(cpct_rand() & 0x03); // we do a bitwise AND with 0b00000011. Any bits other than 11 are discarded 
+   e->x_speed = direction + (direction*(cpct_rand() & 0x03)); // we do a bitwise AND with 0b00000011. Any bits other than 11 are discarded 
 }
 
 // ----------------------------------------------------------------------------
 // Public interface
 // ----------------------------------------------------------------------------
+
+void sys_generator_init() {
+   start_x = 79;
+   direction = -1;
+}
 
 // Initializes all entities in the global array
 // creates them and initialized them
@@ -56,4 +64,14 @@ void sys_generator_update() {
     if (manager_entity_free_space() > 0) {
         generate_new_star();
     }
+}
+
+void sys_generator_right() {
+   start_x = 79;
+   direction = -1;
+}
+
+void sys_generator_left() {
+   start_x = 1;
+   direction = 1;
 }
