@@ -26,6 +26,7 @@ direction movement_direction;
 // sets some init random values for our entities
 void set_init_star_values(Entity *e) {
    i8 sign = -1;
+   u8 abs_speed;
 
    e->type = ENTITY_TYPE_DEFAULT;
 
@@ -36,11 +37,18 @@ void set_init_star_values(Entity *e) {
       e->x = cpct_rand() % 160;
       e->y = start_y;
    }
-   e->color = cpct_px2byteM0(1, 0); // this gets 0x80
    if ( (movement_direction == TO_DOWN) || (movement_direction == TO_RIGHT) ) {
       sign = 1;
    }
-   e->x_speed = sign + (sign*(cpct_rand() & 0x03)); // we do a bitwise AND with 0b00000011. Any bits other than 11 are discarded 
+   abs_speed = (cpct_rand() & 0x03);
+   e->x_speed = sign + (sign*abs_speed); // we do a bitwise AND with 0b00000011. Any bits other than 11 are discarded 
+   if (abs_speed == 0 ) {
+      e->color = cpct_px2byteM0(2, 0); 
+   } else if (abs_speed == 1) { 
+      e->color = cpct_px2byteM0(3, 0); 
+   } else {
+      e->color = cpct_px2byteM0(1, 1); 
+   }
 }
 
 // ----------------------------------------------------------------------------
