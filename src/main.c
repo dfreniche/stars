@@ -38,6 +38,9 @@ void main(void) {
       } else if (cpct_isKeyPressed(Key_CursorDown)) {
          sys_physics_change_y_axis_movement_top_to_bottom();
          sys_generator_top();
+      } else if (cpct_isKeyPressed(Key_H)) {
+         sys_render_hyperspace_toggle();
+         cpct_scanKeyboard_f();
       }
 
       cpct_waitVSYNC();
